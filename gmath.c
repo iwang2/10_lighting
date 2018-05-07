@@ -33,22 +33,29 @@ color calculate_ambient(color alight, double *areflect ) {
 color calculate_diffuse(double light[2][3], double *dreflect, double *normal ) {
   color d;
   double cos = dot_product(normal, light[LOCATION]);
-  d.red = light[COLOR][RED] * dreflect[RED] * cos;
-  d.blue = light[COLOR][BLUE] * dreflect[BLUE] * cos;
-  d.green = light[COLOR][GREEN] * dreflect[GREEN] * cos;
+  if(cos < 0) { d.red = 0; d.green = 0; d.blue = 0; }
+  else {
+    d.red = light[COLOR][RED] * dreflect[RED] * cos;
+    d.blue = light[COLOR][BLUE] * dreflect[BLUE] * cos;
+    d.green = light[COLOR][GREEN] * dreflect[GREEN] * cos;
+  }
   return d;
 }
 
 color calculate_specular(double light[2][3], double *sreflect, double *view, double *normal ) {
   color s;
   double tcos = 2 * dot_product(normal, light[LOCATION]);
-  double r[3];
-  r[0] = tcos * normal[0] - light[LOCATION][0];
-  r[1] = tcos * normal[1] - light[LOCATION][1];
-  r[2] = tcos * normal[2] - light[LOCATION][2];
-  s.red = light[COLOR][RED] * sreflect[RED] * dot_product(r, view);
-  s.green = light[COLOR][GREEN] * sreflect[GREEN] * dot_product(r, view);
-  s.blue = light[COLOR][BLUE] * sreflect[BLUE] * dot_product(r, view);
+  if ( tcos < 0 ) { s.red = 0; s.green = 0; s.blue = 0; }
+  else { 
+    double r[3];
+    r[0] = tcos * normal[0] - light[LOCATION][0];
+    r[1] = tcos * normal[1] - light[LOCATION][1];
+    r[2] = tcos * normal[2] - light[LOCATION][2];
+    double x = pow(dot_product(r, view), 5);
+    s.red = light[COLOR][RED] * sreflect[RED] * x;
+    s.green = light[COLOR][GREEN] * sreflect[GREEN] * x;
+    s.blue = light[COLOR][BLUE] * sreflect[BLUE] * x;
+  }
   return s;
 }
 
