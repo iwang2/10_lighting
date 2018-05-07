@@ -1,0 +1,26 @@
+push
+move
+130 330 0
+rotate
+x 40
+rotate
+y -30
+box
+0 0 0 200 250 120
+#straw
+push
+move
+170 0 -10
+box
+0 0 0 10 -80 10
+#straw bend
+push
+move
+0 80 0
+rotate
+z 80
+box
+0 0 0 10 130 10
+display
+save
+thing.png
